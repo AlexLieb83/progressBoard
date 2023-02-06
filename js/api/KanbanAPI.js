@@ -1,6 +1,6 @@
 export default class KanbanAPI {
   static getItems(columnId) {
-    const column = read().find((column) => column.id === columnId);
+    const column = read().find((column) => column.id == columnId);
 
     if (!column) {
       return [];
@@ -11,11 +11,10 @@ export default class KanbanAPI {
 
   static insertItem(columnId, content) {
     const data = read();
-    const column = data.find((column) => column.id === columnId);
-
+    const column = data.find((column) => column.id == columnId);
     const item = {
       id: Math.floor(Math.random() * 100000),
-      content: content,
+      content,
     };
 
     if (!column) {
@@ -32,7 +31,7 @@ export default class KanbanAPI {
     const data = read();
     const [item, currentColumn] = (() => {
       for (const column of data) {
-        const item = column.items.find((item) => item.id === itemId);
+        const item = column.items.find((item) => item.id == itemId);
 
         if (item) {
           return [item, column];
@@ -49,7 +48,7 @@ export default class KanbanAPI {
 
     if (newProps.columnId !== undefined && newProps.position !== undefined) {
       const targetColumn = data.find(
-        (column) => column.id === newProps.columnId
+        (column) => column.id == newProps.columnId
       );
 
       if (!targetColumn) {
@@ -60,13 +59,15 @@ export default class KanbanAPI {
 
       targetColumn.items.splice(newProps.position, 0, item);
     }
+
+    save(data);
   }
 
   static deleteItem(itemId) {
     const data = read();
 
     for (const column of data) {
-      const item = column.items.find((item) => item.id === itemId);
+      const item = column.items.find((item) => item.id == itemId);
 
       if (item) {
         column.items.splice(column.items.indexOf(item), 1);
@@ -78,7 +79,7 @@ export default class KanbanAPI {
 }
 
 function read() {
-  const json = localStorage.getItem();
+  const json = localStorage.getItem("kanbanData");
 
   if (!json) {
     return [
